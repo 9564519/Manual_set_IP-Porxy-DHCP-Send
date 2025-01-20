@@ -1,5 +1,5 @@
 @echo off >nul
-chcp 1251
+chcp 65001
 rem mode con: cols=84 lines=34
 @echo EN Setting the encoding
 @echo RU Установка кодировки по умолчанию 1251
@@ -119,9 +119,9 @@ goto :next0
 :: Проверяем, что reg_uid установлена правильно
 :: echo reg_uid должен быть: %reg_uid%
 @echo --- Текущий ipconfig IPv4 ---
-chcp 866 >nul
+chcp %code% >nul
 ipconfig | findstr /i "IPv4"
-chcp 1251 >nul
+chcp %code% >nul
 @echo ---- проверяем ping целевого ip ----
 @echo можно ничего не вводить если не нужно проверять
 set prov_podIP=
@@ -137,9 +137,9 @@ cls rem --------------------------- очистка -----------------------------
 @echo ^^!^^!^^!^^!^^!^^!^^!^^!^^!^^!^^!^^!^^!^^!^^!^^!^^!^^!^^!^^!^^!^^!^^!^^!^^!^^!^^!^^!^^!^^!^^!^^!^^!^^!^^!^^!^^!^^!^^!^^!^^!^^!^^!^^!^^!^^!
 @echo Устанавливаем параметры для сетевого протокола
 @echo --- Текущий ipconfig IPv4+DHCP ---
-chcp 866 >nul
+chcp %code% >nul
 ipconfig /all | findstr /i "IPv4 DHCP"
-chcp 1251 >nul 
+chcp %code% >nul 
 color 06
 :input_DHCP1
 echo Определите параметр DHCP
@@ -162,9 +162,9 @@ pause
 cls rem --------------------------- очистка -----------------------------
 
 @echo --- Текущий ipconfig IPv4+DHCP ---
-chcp 866 >nul
+chcp %code% >nul
 ipconfig /all | findstr /i "IPv4 DHCP"
-chcp 1251 >nul
+chcp %code% >nul
 :reg_query
 @reg query "HKEY_USERS\%reg_uid%\Software\Microsoft\Windows\CurrentVersion\Internet Settings" /v ProxyEnable
 if %errorlevel% NEQ 0 >nul (
@@ -219,9 +219,9 @@ if "%tiggDHCP%"=="1" (
 echo --------------------------------------------------------
 echo --------------------------------------------------------
 echo --- Текущий ipconfig IPv4+DHCP ---
-chcp 866 >nul
+chcp %code% >nul
 ipconfig /all | findstr /i "IPv4 DHCP"
-chcp 1251 >nul 
+chcp %code% >nul 
 echo --------------------------------------------------------
 echo      После нажатия далее, будет изменён IP на DHCP
 echo              Для пользователя %loginuser%
@@ -272,9 +272,9 @@ if %errorlevel%==0 (
 
 REM endlocal
 echo Текущие данные IPv4:
-chcp 866 >nul
+chcp %code% >nul
 ipconfig | findstr /i "IPv4"
-chcp 1251 >nul
+chcp %code% >nul
 echo --
 echo - Далее, при нажатии, программа будет закрыта -
 echo --
@@ -287,9 +287,9 @@ exit
 @echo Устанавливаем параметры для сетевого протокола
 :next_setup5
 @echo --- Текущий ipconfig IPv4 ---
-chcp 866 >nul
+chcp %code% >nul
 ipconfig | findstr /i "IPv4"
-chcp 1251 >nul 
+chcp %code% >nul 
 @echo --- Необходимо определить переменные для ip ---
 set pod_ip=
 @echo Вводим третий октет (подсеть) от 0 до 254
@@ -308,9 +308,9 @@ if %valid_range% equ 0 (
 
 :next_setup6
 @echo --- Текущий ipconfig IPv4 ---
-chcp 866 >nul
+chcp %code% >nul
 ipconfig | findstr /i "IPv4"
-chcp 1251 >nul 
+chcp %code% >nul 
 @echo --- Необходимо определить переменные для ip ---
 set P_IP=
 @echo Вводим четвертый октет (хост/ip) от 2 до 254
@@ -339,9 +339,9 @@ color 04
 @echo --------------------------------------------------------
 @echo --------------------------------------------------------
 @echo --- Текущий ipconfig IPv4+DHCP ---
-chcp 866 >nul
+chcp %code% >nul
 ipconfig /all | findstr /i "IPv4 DHCP"
-chcp 1251 >nul 
+chcp %code% >nul 
 @echo --------------------------------------------------------
 @echo        После нажатия далее, будет изменён IP: 
 @echo                 IP = 192.168.%pod_ip%.%P_IP%
@@ -353,4 +353,11 @@ chcp 1251 >nul
 @echo --------------------------------------------------------
 pause
 reg add "HKEY_USERS\%reg_uid%\Software\Microsoft\Windows\CurrentVersion\Internet Settings" /v ProxyEnable /t REG_DWORD /d %proxy% /f|netsh interface ipv4 set dnsservers "Ethernet" static 192.168.1.105|netsh interface ipv4 add dnsservers "Ethernet" address=192.168.25.200 index=2|netsh interface ip set address name="Ethernet" static 192.168.%pod_ip%.%P_IP% 255.255.255.0 192.168.%pod_ip%.1|ipconfig /registerdns
+chcp %code% >nul
+@echo --------------------------------------------------------
+@echo --- Текущий ipconfig IPv4+DHCP ---
+@echo --------------------------------------------------------
+ipconfig /all | findstr /i "IPv4 DHCP"
+pause
+chcp %code% >nul 
 Exit
